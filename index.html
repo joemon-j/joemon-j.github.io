@@ -583,6 +583,27 @@ nav {
   opacity: 0.6;
   margin-bottom: 0.3rem;
 }
+.proj-role-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+}
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  padding: 0.2rem 0.65rem;
+  border-radius: 100px;
+  letter-spacing: 0.03em;
+}
+.role-badge.data  { color: #58a6ff; background: rgba(88,166,255,0.1);  border: 1px solid rgba(88,166,255,0.25); }
+.role-badge.qa    { color: #3fb950; background: rgba(63,185,80,0.1);   border: 1px solid rgba(63,185,80,0.25); }
+.role-badge.auto  { color: #f78166; background: rgba(247,129,102,0.1); border: 1px solid rgba(247,129,102,0.25); }
+.role-badge.client{ color: #bc8cff; background: rgba(188,140,255,0.1); border: 1px solid rgba(188,140,255,0.25); }
 .proj-title {
   font-family: var(--font-display);
   font-size: 1.15rem;
@@ -727,12 +748,213 @@ section + section::before {
   .hero-stats { gap: 1.5rem; }
   footer { padding: 1.8rem 1.5rem; }
 }
+
+/* ══════════════════════════════════════════
+   ANIMATION PACK
+══════════════════════════════════════════ */
+
+/* 1. TYPING EFFECT — Hero name */
+.hero-name {
+  overflow: hidden;
+}
+.hero-name .type-first {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid var(--accent);
+  width: 0;
+  animation:
+    typeFirst 0.8s steps(6,end) 0.3s forwards,
+    blinkCursor 0.7s step-end 0.3s 5;
+}
+.hero-name .type-second {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  animation: typeSecond 0.6s steps(4,end) 1.2s forwards;
+}
+@keyframes typeFirst {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+@keyframes typeSecond {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+@keyframes blinkCursor {
+  0%,100% { border-color: var(--accent); }
+  50%     { border-color: transparent; }
+}
+
+/* 2. CURSOR TRAIL */
+#cursor-trail {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+}
+.cursor-dot {
+  position: fixed;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.05s ease;
+  box-shadow: 0 0 10px rgba(88,166,255,0.8), 0 0 20px rgba(88,166,255,0.4);
+}
+.cursor-ring {
+  position: fixed;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(88,166,255,0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: left 0.12s ease, top 0.12s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+}
+.cursor-ring.hovered {
+  width: 48px; height: 48px;
+  border-color: rgba(88,166,255,0.7);
+}
+
+/* 3. ANIMATED BORDER — Project cards (border only, content fully readable) */
+.project-card {
+  position: relative;
+  isolation: isolate;
+}
+.project-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 10px;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    transparent 0deg,
+    var(--accent) 60deg,
+    var(--accent2) 120deg,
+    transparent 180deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.project-card > * { position: relative; z-index: 1; }
+.project-card:hover::after {
+  opacity: 1;
+  animation: rotateBorder 2.5s linear infinite;
+}
+.project-card:hover {
+  transform: translateX(4px);
+}
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes rotateBorder {
+  to { --angle: 360deg; }
+}
+
+/* 4. SKILL TAGS — staggered pop-in */
+@keyframes tagPop {
+  0%   { opacity: 0; transform: scale(0.7) translateY(6px); }
+  70%  { transform: scale(1.08) translateY(-1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.skill-card .tag {
+  opacity: 0;
+  animation: tagPop 0.35s ease both;
+}
+.skill-card:nth-child(1) .tag:nth-child(1) { animation-delay: 0.05s; }
+.skill-card:nth-child(1) .tag:nth-child(2) { animation-delay: 0.10s; }
+.skill-card:nth-child(1) .tag:nth-child(3) { animation-delay: 0.15s; }
+.skill-card:nth-child(1) .tag:nth-child(4) { animation-delay: 0.20s; }
+.skill-card:nth-child(1) .tag:nth-child(5) { animation-delay: 0.25s; }
+.skill-card:nth-child(1) .tag:nth-child(6) { animation-delay: 0.30s; }
+.skill-card:nth-child(2) .tag:nth-child(1) { animation-delay: 0.10s; }
+.skill-card:nth-child(2) .tag:nth-child(2) { animation-delay: 0.16s; }
+.skill-card:nth-child(2) .tag:nth-child(3) { animation-delay: 0.22s; }
+.skill-card:nth-child(2) .tag:nth-child(4) { animation-delay: 0.28s; }
+.skill-card:nth-child(2) .tag:nth-child(5) { animation-delay: 0.34s; }
+.skill-card:nth-child(2) .tag:nth-child(6) { animation-delay: 0.40s; }
+.skill-card:nth-child(3) .tag:nth-child(1) { animation-delay: 0.08s; }
+.skill-card:nth-child(3) .tag:nth-child(2) { animation-delay: 0.15s; }
+.skill-card:nth-child(3) .tag:nth-child(3) { animation-delay: 0.22s; }
+.skill-card:nth-child(3) .tag:nth-child(4) { animation-delay: 0.29s; }
+.skill-card:nth-child(3) .tag:nth-child(5) { animation-delay: 0.36s; }
+.skill-card:nth-child(4) .tag:nth-child(1) { animation-delay: 0.06s; }
+.skill-card:nth-child(4) .tag:nth-child(2) { animation-delay: 0.13s; }
+.skill-card:nth-child(4) .tag:nth-child(3) { animation-delay: 0.20s; }
+.skill-card:nth-child(4) .tag:nth-child(4) { animation-delay: 0.27s; }
+.skill-card:nth-child(5) .tag:nth-child(1) { animation-delay: 0.07s; }
+.skill-card:nth-child(5) .tag:nth-child(2) { animation-delay: 0.14s; }
+.skill-card:nth-child(5) .tag:nth-child(3) { animation-delay: 0.21s; }
+.skill-card:nth-child(5) .tag:nth-child(4) { animation-delay: 0.28s; }
+.skill-card:nth-child(5) .tag:nth-child(5) { animation-delay: 0.35s; }
+.skill-card:nth-child(5) .tag:nth-child(6) { animation-delay: 0.42s; }
+.skill-card:nth-child(6) .tag:nth-child(1) { animation-delay: 0.09s; }
+.skill-card:nth-child(6) .tag:nth-child(2) { animation-delay: 0.16s; }
+.skill-card:nth-child(6) .tag:nth-child(3) { animation-delay: 0.23s; }
+.skill-card:nth-child(6) .tag:nth-child(4) { animation-delay: 0.30s; }
+.skill-card:nth-child(6) .tag:nth-child(5) { animation-delay: 0.37s; }
+.skill-card:nth-child(6) .tag:nth-child(6) { animation-delay: 0.44s; }
+
+/* 5. STAT COUNTER — CSS counting animation */
+@keyframes countUp5  { from { content: '0+'; } to { content: '5+'; } }
+@keyframes countUp10 { from { content: '0+'; } to { content: '10+'; } }
+@keyframes countUp75 { from { content: '0%'; } to { content: '75%'; } }
+@keyframes countUp65 { from { content: '0%'; } to { content: '65%'; } }
+
+.stat-num.s5  { animation: fadeUp 0.5s ease 0.7s both; }
+.stat-num.s10 { animation: fadeUp 0.5s ease 0.85s both; }
+.stat-num.s75 { animation: fadeUp 0.5s ease 1.0s both; }
+.stat-num.s65 { animation: fadeUp 0.5s ease 1.15s both; }
+
+/* 6. SECTION TITLE — underline draw */
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+  animation: drawLine 0.8s ease 0.4s both;
+  box-shadow: 0 0 8px rgba(88,166,255,0.4);
+}
+@keyframes drawLine {
+  from { width: 0%; }
+  to   { width: 60%; }
+}
+.section-title[style*="display:block"]::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 </style>
 </head>
 <body>
 
 <!-- SCROLL PROGRESS -->
 <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+
+<!-- CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
 <!-- ANIMATED BG -->
 <div class="bg-mesh">
@@ -777,8 +999,8 @@ section + section::before {
   <div class="hero-content">
 
     <h1 class="hero-name">
-      Joemon
-      <span class="outline">Jose</span>
+      <span class="type-first">Joemon</span>
+      <span class="type-second outline">Jose</span>
     </h1>
     <p class="hero-role"><span class="hl">Backend Engineer</span> &nbsp;·&nbsp; <span class="hl">QA Specialist</span></p>
     <p class="hero-desc">
@@ -789,10 +1011,10 @@ section + section::before {
       <a href="#contact" class="btn btn-ghost">Get in Touch</a>
     </div>
     <div class="hero-stats">
-      <div><span class="stat-num">5+</span><span class="stat-label">Years Exp</span></div>
-      <div><span class="stat-num">10+</span><span class="stat-label">Projects</span></div>
-      <div><span class="stat-num">75%</span><span class="stat-label">Defect Reduction</span></div>
-      <div><span class="stat-num">65%</span><span class="stat-label">Faster Testing</span></div>
+      <div><span class="stat-num s5">0+</span><span class="stat-label">Years Exp</span></div>
+      <div><span class="stat-num s10">0+</span><span class="stat-label">Projects</span></div>
+      <div><span class="stat-num s75">0%</span><span class="stat-label">Defect Reduction</span></div>
+      <div><span class="stat-num s65">0%</span><span class="stat-label">Faster Testing</span></div>
     </div>
   </div>
   <div class="scroll-cue"><div class="scroll-line"></div>SCROLL</div>
@@ -886,23 +1108,90 @@ section + section::before {
 
       <div class="project-card card fade fade-1">
         <div class="proj-num">// 01</div>
+        <div class="proj-role-badges">
+          <span class="role-badge data">⚙ Data Engineering</span>
+          <span class="role-badge auto">⚡ Backend API Automation</span>
+          <span class="role-badge qa">✓ QA Testing</span>
+        </div>
         <h3 class="proj-title">K-SMART — Kerala Local Government e-Governance</h3>
-        <div class="proj-sub">Government Platform · QA + Data Handling</div>
-        <p class="proj-desc">End-to-end involvement across both QA and data engineering phases of K-SMART — a large-scale e-governance platform serving 1,000+ local bodies across Kerala.</p>
-        <div class="proj-impact">⚡ QA lead + data pipeline ownership on a state-level platform</div>
+        <div class="proj-sub">Data Engineering · Backend API · Automation Testing</div>
+        <p class="proj-desc">End-to-end involvement across data engineering and API automation testing phases of K-SMART — a large-scale e-governance platform serving 1,000+ local bodies across Kerala.</p>
+        <div class="proj-impact">⚡ Data pipeline ownership + API test automation on a state-level platform</div>
         <ul class="proj-bullets">
-          <li>Led QA efforts for a data-centric e-governance platform serving multiple stakeholders</li>
-          <li>Developed custom test automation scripts for critical user journeys</li>
           <li>Handled data migration and yearly property tax generation for all properties in Kerala</li>
           <li>Fixed data inconsistencies across PostgreSQL DB, S3 JSON files, and OpenSearch indexes</li>
-          <li>Solved critical status mismatches and automated mismatch detection using Python</li>
-          <li>Identified buildings with missing demand records; validated thousands of building IDs</li>
+          <li>Solved critical status mismatches and automated mismatch detection using Python scripts</li>
+          <li>Identified buildings with missing demand records; validated thousands of building IDs against reference lists</li>
+          <li>Designed OpenSearch queries for large-scale building registry filtering and index maintenance</li>
+          <li>Developed and executed API test cases using Postman for critical backend services</li>
+          <li>Built custom automation scripts for critical user journey validation</li>
+          <li>Maintained comprehensive test documentation and defect tracking using JIRA</li>
         </ul>
-        <div class="tags"><span class="tag">Python</span><span class="tag">PostgreSQL</span><span class="tag">OpenSearch</span><span class="tag">AWS S3</span><span class="tag">Selenium</span><span class="tag">JIRA</span></div>
+        <div class="tags"><span class="tag">Python</span><span class="tag">PostgreSQL</span><span class="tag">OpenSearch</span><span class="tag">AWS S3</span><span class="tag">Postman</span><span class="tag">JIRA</span></div>
       </div>
 
       <div class="project-card card fade fade-2">
         <div class="proj-num">// 02</div>
+        <div class="proj-role-badges">
+          <span class="role-badge qa">✓ Manual Testing</span>
+        </div>
+        <h3 class="proj-title">PSCTalks — Kerala PSC Exam Preparation Platform</h3>
+        <div class="proj-sub">Mobile & Web QA · Manual Testing · Android</div>
+        <p class="proj-desc">An online web and mobile learning platform for Kerala PSC exam preparation — featuring video classes, mock tests, and performance tracking for thousands of aspirants.</p>
+        <div class="proj-impact">⚡ Ensured stability across all core learning and assessment modules</div>
+        <ul class="proj-bullets">
+          <li>Tested video classes, structured syllabus, and large question bank modules end-to-end</li>
+          <li>Validated mock test timer, scoring system, and performance tracking accuracy</li>
+          <li>Verified user registration, login, and subscription management flows</li>
+          <li>Tested search, filter functionality, and test result display across Android devices</li>
+        </ul>
+        <div class="tags"><span class="tag">Manual Testing</span><span class="tag">Android Testing</span><span class="tag">Functional Testing</span><span class="tag">JIRA</span></div>
+      </div>
+
+      <div class="project-card card fade fade-3">
+        <div class="proj-num">// 03</div>
+        <div class="proj-role-badges">
+          <span class="role-badge qa">✓ Manual Testing</span>
+        </div>
+        <h3 class="proj-title">Lead IAS Academy — UPSC Coaching Platform</h3>
+        <div class="proj-sub">Mobile & Web QA · Manual Testing · Android</div>
+        <p class="proj-desc">A hybrid online and offline learning platform for UPSC Civil Services preparation — covering full-course programs, test series, mentorship, and student performance tracking.</p>
+        <div class="proj-impact">⚡ Validated critical learning flows across Prelims, Mains & Interview prep</div>
+        <ul class="proj-bullets">
+          <li>Tested full-course programs for Prelims, Mains, and Interview preparation modules</li>
+          <li>Validated test series, answer-writing evaluation, and mentorship tracking features</li>
+          <li>Verified student dashboard, course management, and optional subject coaching flows</li>
+          <li>Ensured app stability and responsiveness across Android platforms using emulators</li>
+        </ul>
+        <div class="tags"><span class="tag">Manual Testing</span><span class="tag">Android Testing</span><span class="tag">Regression Testing</span><span class="tag">JIRA</span></div>
+      </div>
+
+      <div class="project-card card fade fade-4">
+        <div class="proj-num">// 04</div>
+        <div class="proj-role-badges">
+          <span class="role-badge qa">✓ Manual Testing</span>
+          <span class="role-badge client">◈ Client Side Management</span>
+        </div>
+        <h3 class="proj-title">TRINITY — Church Management & Accounting System (USA)</h3>
+        <div class="proj-sub">QA Testing · Financial Systems · Role-Based Access</div>
+        <p class="proj-desc">A Church Management and Financial Accounting application for a US-based client — managing members, contributions, transactions, and comprehensive financial reporting.</p>
+        <div class="proj-impact">⚡ End-to-end QA across financial workflows and access control</div>
+        <ul class="proj-bullets">
+          <li>Tested member and household management with role-based access for Admin and Members</li>
+          <li>Validated contribution tracking, subscription management, and receipt handling</li>
+          <li>Verified payment, journal voucher, bank transfer, and chart of accounts workflows</li>
+          <li>Tested financial reports — General Ledger, Trial Balance, Cash Flow, and Income reports</li>
+        </ul>
+        <div class="tags"><span class="tag">Manual Testing</span><span class="tag">API Testing</span><span class="tag">Postman</span><span class="tag">Financial QA</span><span class="tag">JIRA</span></div>
+      </div>
+
+      <div class="project-card card fade fade-5">
+        <div class="proj-num">// 05</div>
+        <div class="proj-role-badges">
+          <span class="role-badge qa">✓ Manual Testing</span>
+          <span class="role-badge auto">⚡ Automation Testing</span>
+          <span class="role-badge data">⚙ Frontend & Backend</span>
+        </div>
         <h3 class="proj-title">PTT — UK Trust Fund Management System</h3>
         <div class="proj-sub">Test Automation · BDD Framework · Finance</div>
         <p class="proj-desc">Spearheaded test automation for a UK-based trust fund management platform, ensuring every financial transaction was validated before reaching production.</p>
@@ -915,12 +1204,15 @@ section + section::before {
         <div class="tags"><span class="tag">Python</span><span class="tag">Selenium</span><span class="tag">Cucumber</span><span class="tag">BDD</span><span class="tag">JIRA</span></div>
       </div>
 
-      <div class="project-card card fade fade-3">
-        <div class="proj-num">// 03</div>
+      <div class="project-card card fade fade-6">
+        <div class="proj-num">// 06</div>
+        <div class="proj-role-badges">
+          <span class="role-badge qa">✓ Manual Testing</span>
+        </div>
         <h3 class="proj-title">Bloom — HR Management System</h3>
         <div class="proj-sub">End-to-End QA · Performance Testing · Automation</div>
-        <p class="proj-desc">Led complete QA coverage for an integrated HR management platform, combining automated unit testing, performance testing, and continuous integration workflows.</p>
-        <div class="proj-impact">⚡ Automated testing across all critical modules</div>
+        <p class="proj-desc">Led complete QA coverage for an integrated HR management platform, combining automated unit testing and performance testing workflows.</p>
+        <div class="proj-impact">⚡ Automated testing across all critical HR modules</div>
         <ul class="proj-bullets">
           <li>Utilized PyTest for automated testing of critical HR modules</li>
           <li>Conducted performance and load testing using JMeter</li>
@@ -999,8 +1291,8 @@ section + section::before {
 <section id="contact">
   <div class="section-glow"></div>
   <div class="section-wrap">
-    <div class="section-label" style="justify-content:center">05 &mdash; Contact</div>
-    <h2 class="section-title" style="text-align:center">Let's Build Something</h2>
+    <div class="section-label" style="justify-content:center;text-align:center">05 &mdash; Contact</div>
+    <h2 class="section-title" style="text-align:center;display:block">Let's Build Something</h2>
     <div class="contact-inner fade fade-1">
       <p class="contact-desc">I'm always open to discussing new backend projects, data engineering challenges, or engineering opportunities. Drop a message — I'll get back to you.</p>
       <div class="contact-links">
@@ -1034,8 +1326,9 @@ section + section::before {
   <p>Designed &amp; built by <span>Joemon Jose</span> · © 2025 · Pathanamthitta, Kerala</p>
 </footer>
 
+
 <script>
-// Scroll progress bar
+// ── SCROLL PROGRESS ──
 const pFill = document.getElementById('pFill');
 function updateProgress() {
   const scrolled = window.scrollY;
@@ -1043,7 +1336,7 @@ function updateProgress() {
   pFill.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
 }
 
-// Section glow + active nav on scroll
+// ── SECTION GLOW + NAV ──
 const allSections = document.querySelectorAll('section[id]');
 const navAs = document.querySelectorAll('.nav-links a');
 function updateSections() {
@@ -1057,4 +1350,63 @@ function updateSections() {
   navAs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
 }
 
-window.ad
+// ── CURSOR TRAIL ──
+const dot  = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px';
+  dot.style.top  = my + 'px';
+});
+
+// Ring follows with lag
+function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+// Ring grows on hoverable elements
+document.querySelectorAll('a, button, .card, .tag, .contact-link, .btn').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+});
+
+// ── STAT COUNTER — JS counting ──
+function countUp(el, target, suffix, duration) {
+  let start = null;
+  const step = (ts) => {
+    if (!start) start = ts;
+    const progress = Math.min((ts - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(ease * target) + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target + suffix;
+  };
+  requestAnimationFrame(step);
+}
+
+// Trigger counters when hero is visible
+setTimeout(() => {
+  const s5  = document.querySelector('.stat-num.s5');
+  const s10 = document.querySelector('.stat-num.s10');
+  const s75 = document.querySelector('.stat-num.s75');
+  const s65 = document.querySelector('.stat-num.s65');
+  if (s5)  countUp(s5,  5,  '+', 1200);
+  if (s10) countUp(s10, 10, '+', 1400);
+  if (s75) countUp(s75, 75, '%', 1600);
+  if (s65) countUp(s65, 65, '%', 1500);
+}, 400);
+
+// ── MAIN SCROLL HANDLER ──
+window.addEventListener('scroll', () => { updateProgress(); updateSections(); }, { passive: true });
+updateProgress();
+updateSections();
+</script>
+</body>
+</html>
