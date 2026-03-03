@@ -11,7 +11,7 @@
   --bg:        #0d1117;   /* GitHub canvas-default */
   --bg2:       #161b22;   /* GitHub canvas-overlay */
   --bg3:       #1c2128;   /* GitHub canvas-subtle */
-  --border:    #30363d;   /* GitHub border-default */
+  --border:    #3d444d;   /* GitHub border-default — brightened */
   --text:      #e6edf3;   /* GitHub fg-default */
   --muted:     #8b949e;   /* GitHub fg-muted */
   --subtle:    #6e7681;   /* GitHub fg-subtle */
@@ -442,28 +442,36 @@ nav {
 .skill-card {
   position: relative;
   transition: box-shadow 0.4s ease, transform 0.25s ease, border-color 0.25s ease;
+  box-shadow:
+    0 0 0 1px rgba(88,166,255,0.05),
+    0 4px 16px rgba(0,0,0,0.3),
+    0 0 20px rgba(88,166,255,0.04);
 }
 .skill-card:hover {
-  border-color: rgba(88,166,255,0.4);
+  border-color: rgba(88,166,255,0.5) !important;
   transform: translateY(-4px);
   box-shadow:
-    0 0 0 1px rgba(88,166,255,0.1),
+    0 0 0 1px rgba(88,166,255,0.15),
     0 8px 32px rgba(0,0,0,0.4),
-    0 0 30px rgba(88,166,255,0.12),
-    0 0 80px rgba(88,166,255,0.07);
+    0 0 30px rgba(88,166,255,0.18),
+    0 0 80px rgba(88,166,255,0.08);
 }
 
 /* ── AMBIENT GLOW — Project cards (purple) ── */
 .project-card {
   transition: box-shadow 0.4s ease, transform 0.25s ease, border-color 0.25s ease;
+  box-shadow:
+    0 0 0 1px rgba(188,140,255,0.04),
+    0 4px 20px rgba(0,0,0,0.3),
+    0 0 24px rgba(188,140,255,0.04);
 }
 .project-card:hover {
-  border-color: rgba(188,140,255,0.45) !important;
+  border-color: rgba(188,140,255,0.55) !important;
   box-shadow:
-    0 0 0 1px rgba(188,140,255,0.1),
+    0 0 0 1px rgba(188,140,255,0.15),
     0 8px 40px rgba(0,0,0,0.5),
-    0 0 40px rgba(188,140,255,0.15),
-    0 0 100px rgba(188,140,255,0.08),
+    0 0 40px rgba(188,140,255,0.2),
+    0 0 100px rgba(188,140,255,0.1),
     inset 0 0 30px rgba(188,140,255,0.03);
 }
   background: var(--bg2);
